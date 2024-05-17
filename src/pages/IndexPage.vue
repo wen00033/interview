@@ -2,18 +2,25 @@
   <q-page class="row q-pt-xl">
     <div class="full-width q-px-xl">
       <div class="q-mb-xl">
-        <q-input v-model="tempData.name" label="姓名" />
-        <q-input v-model="tempData.age" label="年齡" />
-        <q-btn color="primary" class="q-mt-md">新增</q-btn>
+        <q-input v-model="tempData.name" type="text" label="姓名" />
+        <q-input v-model="tempData.age" type="number" label="年齡" />
+        <q-btn
+          @click="
+            () => {
+              AddItemHandler(tempData);
+            }
+          "
+          color="primary"
+          class="q-mt-md"
+          >新增</q-btn
+        >
       </div>
-
       <q-table
         flat
         bordered
         ref="tableRef"
-        :rows="blockData"
+        :rows="store.TableData"
         :columns="(tableConfig as QTableProps['columns'])"
-        row-key="id"
         hide-pagination
         separator="cell"
         :rows-per-page-options="[0]"
@@ -78,9 +85,10 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios';
+// import axios from 'axios';
 import { QTableProps } from 'quasar';
 import { ref } from 'vue';
+import { useTableDataStore } from '../stores/example-store';
 interface btnType {
   label: string;
   icon: string;
@@ -118,13 +126,28 @@ const tableButtons = ref([
     status: 'delete',
   },
 ]);
-
 const tempData = ref({
   name: '',
   age: '',
+  // add id
+  id: crypto.randomUUID(),
 });
+const tableData = ref([]);
+const store = useTableDataStore();
+store.getApiData();
 function handleClickOption(btn, data) {
-  // ...
+  if (btn.status == 'delete') {
+    store.deleteItem(data.id);
+  }
+  if (btn.status == 'edit') {
+    store.updatedItem(data.id);
+  }
+}
+
+function AddItemHandler(item) {
+  if (tempData.value.name == '') return;
+  if (tempData.value.age == '') return;
+  store.addItem(item);
 }
 </script>
 
