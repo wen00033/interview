@@ -1,6 +1,5 @@
 import { table } from 'console';
 import { defineStore } from 'pinia';
-import axios from 'src/boot/axios';
 
 export const useTableDataStore = defineStore('TableDataStore', {
   state: () => ({
@@ -23,7 +22,6 @@ export const useTableDataStore = defineStore('TableDataStore', {
       item.name = name;
       item.age = age;
     },
-
     addItem(item) {
       this.TableData.push(item);
     },
